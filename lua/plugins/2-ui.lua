@@ -450,7 +450,6 @@ return {
       if utils.is_available("nvim-notify") then telescope.load_extension("notify") end
       if utils.is_available("telescope-fzf-native.nvim") then telescope.load_extension("fzf") end
       if utils.is_available("telescope-undo.nvim") then telescope.load_extension("undo") end
-      if utils.is_available("project.nvim") then telescope.load_extension("projects") end
       if utils.is_available("LuaSnip") then telescope.load_extension("luasnip") end
       if utils.is_available("aerial.nvim") then telescope.load_extension("aerial") end
       if utils.is_available("nvim-neoclip.lua") then

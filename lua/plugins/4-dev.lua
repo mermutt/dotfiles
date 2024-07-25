@@ -67,7 +67,6 @@ return {
       require("luasnip").filetype_extend("python", { "pydoc" })
       require("luasnip").filetype_extend("rust", { "rustdoc" })
       require("luasnip").filetype_extend("cs", { "csharpdoc" })
-      require("luasnip").filetype_extend("java", { "javadoc" })
       require("luasnip").filetype_extend("c", { "cdoc" })
       require("luasnip").filetype_extend("cpp", { "cppdoc" })
       require("luasnip").filetype_extend("php", { "phpdoc" })
@@ -373,10 +372,6 @@ return {
       -- Visual basic dotnet
       dap.configurations.vb = dap.configurations.cs
 
-      -- Java
-      -- Note: The java debugger jdtls is automatically spawned and configured
-      -- by the plugin 'nvim-java' in './3-dev-core.lua'.
-
       -- Python
       dap.adapters.python = {
         type = 'executable',
@@ -659,7 +654,6 @@ return {
       "rcarriga/cmp-dap",
       "jay-babu/mason-nvim-dap.nvim",
       "jbyuki/one-small-step-for-vimkind",
-      "nvim-java/nvim-java",
     },
   },
 
@@ -706,17 +700,30 @@ return {
   },
 
   {
-     "dhananjaylatkar/cscope_maps.nvim",
-     dependencies = {
-        "folke/which-key.nvim", -- optional [for whichkey hints]
-        "nvim-telescope/telescope.nvim", -- optional [for picker="telescope"]
-        "ibhagwan/fzf-lua", -- optional [for picker="fzf-lua"]
-        "nvim-tree/nvim-web-devicons", -- optional [for devicons in telescope or fzf]
-     },
-     opts = {
-        -- USE EMPTY FOR DEFAULT OPTIONS
-        -- DEFAULTS ARE LISTED BELOW
-     },
-  },
+    "dhananjaylatkar/cscope_maps.nvim",
+    dependencies = {
+       "folke/which-key.nvim", -- optional [for whichkey hints]
+       "nvim-telescope/telescope.nvim", -- optional [for picker="telescope"]
+       "ibhagwan/fzf-lua", -- optional [for picker="fzf-lua"]
+       "nvim-tree/nvim-web-devicons", -- optional [for devicons in telescope or fzf]
+    },
+    opts = {
+      skip_input_prompt = true, -- doesn't ask for input
 
+      -- cscope related defaults
+      cscope = {
+        -- location of cscope db file
+        db_file = "./cscope.out", -- DB or table of DBs
+        -- NOTE:
+        --   when table of DBs is provided -
+        --   first DB is "primary" and others are "secondary"
+        --   primary DB is used for build and project_rooter
+        db_build_cmd_args = { "-bR" },
+        -- cscope executable
+        exec = "cscope", -- "cscope" or "gtags-cscope"
+        -- choose your fav picker
+        picker = "fzf-lua", -- "quickfix", "telescope", "fzf-lua" or "mini-pick"
+      },
+    },
+  },
 } -- end of return

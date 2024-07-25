@@ -237,23 +237,6 @@ autocmd("BufWritePre", {
 
 -- ## COMMANDS --------------------------------------------------------------
 
--- 10. Testing commands
--- Aditional commands to the ones implemented in neotest.
--------------------------------------------------------------------
-
--- Customize this command to work as you like
-cmd("TestNodejs", function()
-  vim.cmd ":ProjectRoot"                 -- cd the project root (requires project.nvim)
-  vim.cmd ":TermExec cmd='npm run test'" -- convention to run tests on nodejs
-  -- You can generate code coverage by add this to your project's packages.json
-  -- "tests": "jest --coverage"
-end, { desc = "Run all unit tests for the current nodejs project" })
-
--- Customize this command to work as you like
-cmd("TestNodejsE2e", function()
-  vim.cmd ":ProjectRoot"                -- cd the project root (requires project.nvim)
-  vim.cmd ":TermExec cmd='npm run e2e'" -- Conventional way to call e2e in nodejs (requires ToggleTerm)
-end, { desc = "Run e2e tests for the current nodejs project" })
 
 -- Extra commands
 ----------------------------------------------

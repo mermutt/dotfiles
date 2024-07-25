@@ -71,3 +71,5 @@ require("lazy").setup({
   -- We don't use this, so create it in a disposable place.
   lockfile = vim.fn.stdpath("cache") .. "/lazy-lock.json",
 })
+
+require("cscope_maps").setup({})

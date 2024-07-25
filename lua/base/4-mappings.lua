@@ -897,14 +897,6 @@ if is_available "telescope.nvim" then
     desc = "Search symbol in buffer", -- Useful to find every time a variable is assigned.
   }
 
-  -- extra - project.nvim
-  if is_available "project.nvim" then
-    maps.n["<leader>fp"] = {
-      function() vim.cmd "Telescope projects" end,
-      desc = "Find project",
-    }
-  end
-
   -- extra - spectre.nvim (search and replace in project)
   if is_available "nvim-spectre" then
     maps.n["<leader>fr"] = {

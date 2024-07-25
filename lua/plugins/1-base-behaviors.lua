@@ -2,7 +2,6 @@
 -- Things that add new behaviors.
 
 --    Sections:
---       -> project.nvim           [project search + auto cd]
 --       -> trim.nvim              [auto trim spaces]
 --       -> stickybuf.nvim         [lock special buffers]
 --       -> mini.bufremove         [smart bufdelete]
@@ -22,43 +21,6 @@ local is_windows = vim.fn.has('win32') == 1         -- true if on windows
 local is_android = vim.fn.isdirectory('/data') == 1 -- true if on android
 
 return {
-  -- project.nvim [project search + auto cd]
-  -- https://github.com/ahmedkhalf/project.nvim
-  {
-    "zeioth/project.nvim",
-    event = "User BaseDefered",
-    cmd = "ProjectRoot",
-    opts = {
-      -- How to find root directory
-      patterns = {
-        ".git",
-        "_darcs",
-        ".hg",
-        ".bzr",
-        ".svn",
-        "Makefile",
-        "package.json",
-        ".solution",
-        ".solution.toml"
-      },
-      -- Don't list the next projects
-      exclude_dirs = {
-        "~/"
-      },
-      silent_chdir = true,
-      manual_mode = false,
-
-      -- Don't chdir for certain buffers
-      exclude_chdir = {
-        filetype = {"", "OverseerList", "alpha"},
-        buftype = {"nofile", "terminal"},
-      },
-
-      --ignore_lsp = { "lua_ls" },
-    },
-    config = function(_, opts) require("project_nvim").setup(opts) end,
-  },
-
   -- trim.nvim [auto trim spaces]
   -- https://github.com/cappyzawa/trim.nvim
   {
