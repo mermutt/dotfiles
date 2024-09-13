@@ -1,14 +1,13 @@
 [user]
 	name = Yury Meshkov
-	email = yury.meshkov@gmail.com
+	email = yury.meshkov@samsung.com
 
 [alias]
 	 f = fetch --prune --all
 	 s = status -sb
 	st = status
 	co = checkout
-	# regex checkout
-	#    git rco <regex> [<options>]
+    sur = submodule update --init --recursive
 	rco = "!f() { REGEX=$1; shift; git checkout \"$@\" \"$(git branch --all | cut -c 3- | sed 's|^remotes/.*/||' | grep -m 1 -iEe \"$REGEX\" )\"; }; f"
 	ci = commit
 	br = branch
@@ -16,9 +15,7 @@
 	dfs = diff --staged
 	la = -c core.pager='less -S' log --pretty='tformat:%C(bold cyan)%h %C(blue)%<(10,trunc)%aN %<(110,trunc)%C(white)%s %C(auto)%d %C(dim green)%ar' --graph --all
 	lb = -c core.pager='less -S' log --pretty='tformat:%C(bold cyan)%h %C(blue)%<(10,trunc)%aN %<(110,trunc)%C(white)%s %C(auto)%d %C(dim green)%ar' --graph
-	 l = -c core.pager='less -S' log --pretty='tformat:%C(bold cyan)%h %C(blue)%<(10,trunc)%aN %<(110,trunc)%C(white)%s %C(auto)%d %C(dim green)%ar' --graph -30
-	#logs = log --graph --decorate --oneline --abbrev-commit --all -45
-	#logc = log --graph --decorate --abbrev-commit --format=format:'%C(bold blue)%h%C(reset) - %C(bold yellow)%d%C(reset) %C(white)%s%C(reset)'
+	l  = -c core.pager='less -S' log --pretty='tformat:%C(bold cyan)%h %C(blue)%<(10,trunc)%aN %<(110,trunc)%C(white)%s %C(auto)%d %C(dim green)%ar' --graph -30
 
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
 	## See what files were changed since yesterday
@@ -34,26 +31,29 @@
 	ignored = !git status -s --ignored | grep \"^!!\"
 
 	# list aliases
-	al = "!git config -l | grep alias | cut -c 7-"
+    al = "!git config -l | grep alias | cut -c 7-"
+
+[merge]
+    #tool = fugitive
+    conflictstyle = diff3
+
+[mergetool]
+	prompt = true
+	keepBackup = false
+
+[mergetool "fugitive"]
+	cmd = vim -f -c \"Gdiffsplit!\" \"$MERGED\"
 
 [difftool]
 	prompt = true
 
-[diff]
-	tool = p4mergetool
-
-[difftool "p4mergetool"]
-	cmd = /Applications/p4merge.app/Contents/Resources/launchp4merge $LOCAL $REMOTE
-
-[mergetool "p4mergetool"]
-	cmd = /Applications/p4merge.app/Contents/Resources/launchp4merge $PWD/$BASE $PWD/$REMOTE $PWD/$LOCAL $PWD/$MERGED
-	trustExitCode = false
-
 [core]
-	excludesfile = ~/.gitignore
-	preloadindex = true
-	editor = nvim
-	abbrev = 9
+    pager = delta
+    excludesfile = ~/.gitignore
+    preloadindex = true
+    editor = vim
+    abbrev = 9
+    autocrlf = false
 
 [color]
 	ui = auto
@@ -64,11 +64,59 @@
 [credential]
 	helper = store
 
+[remote "origin"]
+	proxy =
+
 [commit]
-	template = ~/.git-commit-message
+    template = ~/.git-commit-message
+
+# [filter "lfs"]
+# 	smudge = git-lfs smudge -- %f
+# 	process = git-lfs filter-process
+# 	required = true
+# 	clean = git-lfs clean -- %f
+
+[http]
+	sslVerify = false
+	proxy = http://192.168.57.33:80
+
+[uploadpack]
+	allowFilter = true
+	advertiseblobmaxbytes = true
+	allowanysha1inwant = true
+[safe]
+	directory = /proj/eucbasefwmvp/nvmetc
 
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+
+[interactive]
+    diffFilter = delta --color-only --features=interactive
+
+[delta]
+    features = decorations
+    navigate = true
+    line-numbers = true
+    side-by-side = true
+    minus-style = "red"
+    plus-style = "green dim"
+    commit-style = "bold yellow"
+    file-style = "bold purple"
+    hunk-header-style = "bold blue"
+    light = false
+
+[delta "interactive"]
+    keep-plus-minus-markers = false
+
+[delta "decorations"]
+    commit-decoration-style = blue ol
+    commit-style = raw
+    hunk-header-decoration-style = blue box
+    hunk-header-line-number-style = "#067a00"
+    hunk-header-style = line-number syntax
+
+[diff]
+    colorMoved = default
