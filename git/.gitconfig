@@ -50,10 +50,6 @@
 [commit]
 	template = ~/.git-commit-message
 
-[http]
-	sslVerify = false
-	proxy = http://192.168.57.33:80
-
 [uploadpack]
 	allowFilter = true
 	advertiseblobmaxbytes = true

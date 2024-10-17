@@ -335,7 +335,57 @@ return {
   --   opts = { suggesion = { enabled = false }, panel = { enabled = false } },
   --   config = function (_, opts) require("copilot_cmp").setup(opts) end
   -- },
-
+ -- [codecompanion.nvim] - Integrates LLMs with neovim
+  -- see: `:h codecompanion.txt`
+  -- link: https://github.com/olimorris/codecompanion.nvim
+  {
+      'olimorris/codecompanion.nvim',
+      event = 'VeryLazy',
+      branch = 'main',
+      dependencies = { 'nvim-lua/plenary.nvim', 'nvim-treesitter/nvim-treesitter', 'nvim-telescope/telescope.nvim', 'stevearc/dressing.nvim' },
+      -- stylua: ignore
+      keys = {
+          { '<leader>zi', '<cmd>CodeCompanion<cr>', mode = { 'n', 'v' }, desc = 'Inline Prompt [zi]' },
+          { '<leader>zz', '<cmd>CodeCompanionChat<cr>', mode = { 'n', 'v' }, desc = 'Open Chat [zz]' },
+          { '<leader>zt', '<cmd>CodeCompanionToggle<cr>', mode = { 'n', 'v' }, desc = 'Toggle Chat [zt]' },
+          { '<leader>za', '<cmd>CodeCompanionActions<cr>', mode = { 'n', 'v' }, desc = 'Actions [za]' },
+          { '<leader>zp', '<cmd>CodeCompanionAdd<cr>', mode = { 'v' }, desc = 'Paste Selected to the Chat [zp]' },
+      },
+      config = function()
+          require('codecompanion').setup {
+              adapters = {
+                  ollama = function()
+                      return require('codecompanion.adapters').extend('ollama', {
+                          env = {
+                              url = "http://127.0.0.1:11434",
+                          },
+                          schema = {
+                              model = {
+                                  --default = 'qwen2.5-coder:7b-instruct-q8_0',
+                                  default = "llama3.1:8b-instruct-q8_0",
+                              },
+                          },
+                      })
+                  end,
+              },
+              strategies = {
+                  chat = { adapter = 'ollama', },
+                  inline = { adapter = 'ollama', },
+                  agent = { adapter = 'ollama', },
+              },
+              -- GENERAL OPTIONS ----------------------------------------------------------
+              opts = {
+                  log_level = 'ERROR', -- TRACE|DEBUG|ERROR|INFO
+                  -- If this is false then any default prompt that is marked as containing code
+                  -- will not be sent to the LLM. Please note that whilst I have made every
+                  -- effort to ensure no code leakage, using this is at your own risk
+                  send_code = true,
+                  use_default_actions = true, -- Show the default actions in the action palette?
+                  use_default_prompts = true, -- Show the default prompts in the action palette?
+              },
+          }
+      end,
+  },
   {
     "yetone/avante.nvim",
     event = "VeryLazy",
