@@ -794,7 +794,7 @@ return {
         -- cscope executable
         exec = "cscope", -- "cscope" or "gtags-cscope"
         -- choose your fav picker
-        picker = "fzf-lua", -- "quickfix", "telescope", "fzf-lua" or "mini-pick"
+        picker = "telescope", -- "quickfix", "telescope", "fzf-lua" or "mini-pick"
       },
     },
   },
