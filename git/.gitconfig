@@ -7,7 +7,7 @@
 	 s = status -sb
 	st = status
 	co = checkout
-    sur = submodule update --init --recursive
+	sur = submodule update --init --recursive
 	rco = "!f() { REGEX=$1; shift; git checkout \"$@\" \"$(git branch --all | cut -c 3- | sed 's|^remotes/.*/||' | grep -m 1 -iEe \"$REGEX\" )\"; }; f"
 	ci = commit
 	br = branch
@@ -21,39 +21,22 @@
 	## See what files were changed since yesterday
 	changed = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative --since=yesterday --name-only
 
-	# Shows changes to "Suspend" in file
-	# git log -L '/Suspend/',/^}/:Src/HIL/Core/MG_Core/BackgroundMgr/BackgroundMgr.cpp
-
 	hide = update-index --assume-unchanged
 	unhide = update-index --no-assume-unchanged
-	# Lists files --assumed-unchanged that were added with 
+	# Lists files --assumed-unchanged that were added with
 	hidden = !git ls-files -v | grep \"^[a-z]\"
 	ignored = !git status -s --ignored | grep \"^!!\"
 
 	# list aliases
-    al = "!git config -l | grep alias | cut -c 7-"
-
-[merge]
-    #tool = fugitive
-    conflictstyle = diff3
-
-[mergetool]
-	prompt = true
-	keepBackup = false
-
-[mergetool "fugitive"]
-	cmd = vim -f -c \"Gdiffsplit!\" \"$MERGED\"
-
-[difftool]
-	prompt = true
+	al = "!git config -l | grep alias | cut -c 7-"
 
 [core]
-    pager = delta
-    excludesfile = ~/.gitignore
-    preloadindex = true
-    editor = vim
-    abbrev = 9
-    autocrlf = false
+	pager = delta
+	excludesfile = ~/.gitignore
+	preloadindex = true
+	editor = nvim
+	abbrev = 9
+	autocrlf = false
 
 [color]
 	ui = auto
@@ -64,17 +47,8 @@
 [credential]
 	helper = store
 
-[remote "origin"]
-	proxy =
-
 [commit]
-    template = ~/.git-commit-message
-
-# [filter "lfs"]
-# 	smudge = git-lfs smudge -- %f
-# 	process = git-lfs filter-process
-# 	required = true
-# 	clean = git-lfs clean -- %f
+	template = ~/.git-commit-message
 
 [http]
 	sslVerify = false
@@ -84,39 +58,40 @@
 	allowFilter = true
 	advertiseblobmaxbytes = true
 	allowanysha1inwant = true
-[safe]
-	directory = /proj/eucbasefwmvp/nvmetc
-
-[filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
 
 [interactive]
-    diffFilter = delta --color-only --features=interactive
+	diffFilter = delta --color-only --features=interactive
 
 [delta]
-    features = decorations
-    navigate = true
-    line-numbers = true
-    side-by-side = true
-    minus-style = "red"
-    plus-style = "green dim"
-    commit-style = "bold yellow"
-    file-style = "bold purple"
-    hunk-header-style = "bold blue"
-    light = false
-
+	features = decorations
+	navigate = true
+	line-numbers = true
+	side-by-side = true
+	minus-style = "red"
+	plus-style = "green dim"
+	commit-style = "bold yellow"
+	file-style = "bold purple"
+	hunk-header-style = "bold blue"
+	light = false
 [delta "interactive"]
-    keep-plus-minus-markers = false
-
+	keep-plus-minus-markers = false
 [delta "decorations"]
-    commit-decoration-style = blue ol
-    commit-style = raw
-    hunk-header-decoration-style = blue box
-    hunk-header-line-number-style = "#067a00"
-    hunk-header-style = line-number syntax
+	commit-decoration-style = blue ol
+	commit-style = raw
+	hunk-header-decoration-style = blue box
+	hunk-header-line-number-style = "#067a00"
+	hunk-header-style = line-number syntax
 
 [diff]
-    colorMoved = default
+	colorMoved = default
+[difftool]
+	prompt = true
+	tool = fugitive
+
+[merge]
+	tool = fugitive
+[mergetool]
+	prompt = true
+	keepBackup = false
+[mergetool "fugitive"]
+	cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
