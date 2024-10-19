@@ -76,27 +76,53 @@ return {
     end,
   },
 
-  --  GIT ---------------------------------------------------------------------
-  --  Git signs [git hunks]
-  --  https://github.com/lewis6991/gitsigns.nvim
+  -- Disable to use mini.diff
+  --   --  GIT ---------------------------------------------------------------------
+  --   --  Git signs [git hunks]
+  --   --  https://github.com/lewis6991/gitsigns.nvim
+  --   {
+  --     "lewis6991/gitsigns.nvim",
+  --     enabled = vim.fn.executable "git" == 1,
+  --     event = "User BaseGitFile",
+  --     opts = function()
+  --       local get_icon = require("base.utils").get_icon
+  --       return {
+  --         max_file_length = vim.g.big_file.lines,
+  --         signs = {
+  --           add = { text = get_icon("GitSign") },
+  --           change = { text = get_icon("GitSign") },
+  --           delete = { text = get_icon("GitSign") },
+  --           topdelete = { text = get_icon("GitSign") },
+  --           changedelete = { text = get_icon("GitSign") },
+  --           untracked = { text = get_icon("GitSign") },
+  --         },
+  --       }
+  --     end
+  --   },
+
+  -- setup mini.diff
   {
-    "lewis6991/gitsigns.nvim",
-    enabled = vim.fn.executable "git" == 1,
-    event = "User BaseGitFile",
-    opts = function()
-      local get_icon = require("base.utils").get_icon
-      return {
-        max_file_length = vim.g.big_file.lines,
+    "echasnovski/mini.diff",
+    event = "VeryLazy",
+    keys = {
+      {
+        "<leader>go",
+        function()
+          require("mini.diff").toggle_overlay(0)
+        end,
+        desc = "Toggle mini.diff overlay",
+      },
+    },
+    opts = {
+      view = {
+        style = "sign",
         signs = {
-          add = { text = get_icon("GitSign") },
-          change = { text = get_icon("GitSign") },
-          delete = { text = get_icon("GitSign") },
-          topdelete = { text = get_icon("GitSign") },
-          changedelete = { text = get_icon("GitSign") },
-          untracked = { text = get_icon("GitSign") },
+          add = "▎",
+          change = "▎",
+          delete = "",
         },
-      }
-    end
+      },
+    },
   },
 
   --  Git fugitive mergetool + [git commands]
@@ -361,8 +387,11 @@ return {
                           },
                           schema = {
                               model = {
-                                  --default = 'qwen2.5-coder:7b-instruct-q8_0',
-                                  default = "llama3.1:8b-instruct-q8_0",
+                                  default = 'qwen2.5-coder:latest',
+                                  -- default = "llama3.1:8b-instruct-q8_0",
+                              },
+                              num_ctx = {
+                                  default = 32768,
                               },
                           },
                       })
@@ -375,7 +404,7 @@ return {
               },
               -- GENERAL OPTIONS ----------------------------------------------------------
               opts = {
-                  log_level = 'ERROR', -- TRACE|DEBUG|ERROR|INFO
+                  log_level = 'TRACE', -- TRACE|DEBUG|ERROR|INFO
                   -- If this is false then any default prompt that is marked as containing code
                   -- will not be sent to the LLM. Please note that whilst I have made every
                   -- effort to ensure no code leakage, using this is at your own risk
@@ -398,7 +427,8 @@ return {
         ollama = {
           ["local"] = true,
           endpoint = "127.0.0.1:11434/v1",
-          model = "llama3.1:8b-instruct-q8_0",
+          --model = "llama3.1:8b-instruct-q8_0",
+          model = "qwen2.5-coder:latest",
           parse_curl_args = function(opts, code_opts)
             return {
               url = opts.endpoint .. "/chat/completions",
