@@ -160,7 +160,7 @@ if is_available "alpha-nvim" then
   })
 end
 
--- 4. Update neotree when closin the git client.
+-- 4. Update neotree when closing the git client.
 if is_available "neo-tree.nvim" then
   autocmd("TermClose", {
     pattern = { "*lazygit", "*gitui" },
@@ -192,7 +192,7 @@ autocmd("BufWritePre", {
 
     if buf_is_valid_and_listed then
       vim.fn.mkdir(vim.fn.fnamemodify(
-        vim.loop.fs_realpath(args.match) or args.match, ":p:h"), "p")
+        vim.uv.fs_realpath(args.match) or args.match, ":p:h"), "p")
     end
   end,
 })
@@ -209,13 +209,16 @@ autocmd({ "VimEnter", "FileType", "BufEnter", "WinEnter" }, {
 autocmd("VimEnter", {
   desc = "Disable right contextual menu warning message",
   callback = function()
-    -- Disable right click message
+    -- Revome from menu
     vim.api.nvim_command [[aunmenu PopUp.How-to\ disable\ mouse]]
-    -- vim.api.nvim_command [[aunmenu PopUp.-1-]] -- You can remode a separator like this.
+    vim.api.nvim_command [[aunmenu PopUp.Inspect]]
+    vim.api.nvim_command [[aunmenu PopUp.-1-]] -- You can remove a separator like this.
+
+    -- Add to menu
+    vim.api.nvim_command [[menu PopUp.Format\ \Code <cmd>silent! Format<CR>]]
+    vim.api.nvim_command [[menu PopUp.-1- <Nop>]]
     vim.api.nvim_command [[menu PopUp.Toggle\ \Breakpoint <cmd>:lua require('dap').toggle_breakpoint()<CR>]]
-    vim.api.nvim_command [[menu PopUp.-2- <Nop>]]
-    vim.api.nvim_command [[menu PopUp.Start\ \Compiler <cmd>:CompilerOpen<CR>]]
-    vim.api.nvim_command [[menu PopUp.Start\ \Debugger <cmd>:DapContinue<CR>]]
+    vim.api.nvim_command [[menu PopUp.Debugger\ \Continue <cmd>:DapContinue<CR>]]
     vim.api.nvim_command [[menu PopUp.Run\ \Test <cmd>:Neotest run<CR>]]
   end,
 })
@@ -237,25 +240,42 @@ autocmd("BufWritePre", {
 
 -- ## COMMANDS --------------------------------------------------------------
 
+-- 10. Testing commands
+-- Aditional commands to the ones implemented in neotest.
+-------------------------------------------------------------------
+
+-- Customize this command to work as you like
+cmd("TestNodejs", function()
+  -- You can generate code coverage by adding this to your project's packages.json
+  -- "tests": "jest --coverage"
+  vim.cmd(":ProjectRoot")                 -- cd the project root (requires project.nvim)
+  vim.cmd(":TermExec cmd='npm run test'") -- convention to run tests on nodejs
+end, { desc = "Run all unit tests for the current nodejs project" })
+
+-- Customize this command to work as you like
+cmd("TestNodejsE2e", function()
+  vim.cmd(":ProjectRoot")                -- cd the project root (requires project.nvim)
+  vim.cmd(":TermExec cmd='npm run e2e'") -- Conventional way to call e2e in nodejs (requires ToggleTerm)
+end, { desc = "Run e2e tests for the current nodejs project" })
 
 -- Extra commands
 ----------------------------------------------
 
 -- Change working directory
 cmd("Cwd", function()
-  vim.cmd ":cd %:p:h"
-  vim.cmd ":pwd"
+  vim.cmd(":cd %:p:h")
+  vim.cmd(":pwd")
 end, { desc = "cd current file's directory" })
 
 -- Set working directory (alias)
 cmd("Swd", function()
-  vim.cmd ":cd %:p:h"
-  vim.cmd ":pwd"
+  vim.cmd(":cd %:p:h")
+  vim.cmd(":pwd")
 end, { desc = "cd current file's directory" })
 
 -- Write all buffers
 cmd("WriteAllBuffers", function()
-  vim.cmd "wa"
+  vim.cmd("wa")
 end, { desc = "Write all changed buffers" })
 
 -- Close all notifications

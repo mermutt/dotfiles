@@ -1,5 +1,5 @@
 -- Dev
--- Things you actively use for coding.
+-- Plugins you actively use for coding.
 
 --    Sections:
 --       ## SNIPPETS
@@ -22,6 +22,11 @@
 --       ## ARTIFICIAL INTELLIGENCE
 --       -> neural                         [chatgpt code generator]
 --       -> copilot                        [github code suggestions]
+--       -> guess-indent                   [guess-indent]
+
+--       ## COMPILER
+--       -> compiler.nvim                  [compiler]
+--       -> overseer.nvim                  [task runner]
 
 --       ## DEBUGGER
 --       -> nvim-dap                       [debugger]
@@ -67,6 +72,7 @@ return {
       require("luasnip").filetype_extend("python", { "pydoc" })
       require("luasnip").filetype_extend("rust", { "rustdoc" })
       require("luasnip").filetype_extend("cs", { "csharpdoc" })
+      require("luasnip").filetype_extend("java", { "javadoc" })
       require("luasnip").filetype_extend("c", { "cdoc" })
       require("luasnip").filetype_extend("cpp", { "cppdoc" })
       require("luasnip").filetype_extend("php", { "phpdoc" })
@@ -76,53 +82,27 @@ return {
     end,
   },
 
-  -- Disable to use mini.diff
-  --   --  GIT ---------------------------------------------------------------------
-  --   --  Git signs [git hunks]
-  --   --  https://github.com/lewis6991/gitsigns.nvim
-  --   {
-  --     "lewis6991/gitsigns.nvim",
-  --     enabled = vim.fn.executable "git" == 1,
-  --     event = "User BaseGitFile",
-  --     opts = function()
-  --       local get_icon = require("base.utils").get_icon
-  --       return {
-  --         max_file_length = vim.g.big_file.lines,
-  --         signs = {
-  --           add = { text = get_icon("GitSign") },
-  --           change = { text = get_icon("GitSign") },
-  --           delete = { text = get_icon("GitSign") },
-  --           topdelete = { text = get_icon("GitSign") },
-  --           changedelete = { text = get_icon("GitSign") },
-  --           untracked = { text = get_icon("GitSign") },
-  --         },
-  --       }
-  --     end
-  --   },
-
-  -- setup mini.diff
+  --  GIT ---------------------------------------------------------------------
+  --  Git signs [git hunks]
+  --  https://github.com/lewis6991/gitsigns.nvim
   {
-    "echasnovski/mini.diff",
-    event = "VeryLazy",
-    keys = {
-      {
-        "<leader>go",
-        function()
-          require("mini.diff").toggle_overlay(0)
-        end,
-        desc = "Toggle mini.diff overlay",
-      },
-    },
-    opts = {
-      view = {
-        style = "sign",
+    "lewis6991/gitsigns.nvim",
+    enabled = vim.fn.executable("git") == 1,
+    event = "User BaseGitFile",
+    opts = function()
+      local get_icon = require("base.utils").get_icon
+      return {
+        max_file_length = vim.g.big_file.lines,
         signs = {
-          add = "▎",
-          change = "▎",
-          delete = "",
+          add = { text = get_icon("GitSign") },
+          change = { text = get_icon("GitSign") },
+          delete = { text = get_icon("GitSign") },
+          topdelete = { text = get_icon("GitSign") },
+          changedelete = { text = get_icon("GitSign") },
+          untracked = { text = get_icon("GitSign") },
         },
-      },
-    },
+      }
+    end
   },
 
   --  Git fugitive mergetool + [git commands]
@@ -140,7 +120,7 @@ return {
   --  	keepBackup = false
   {
     "tpope/vim-fugitive",
-    enabled = vim.fn.executable "git" == 1,
+    enabled = vim.fn.executable("git") == 1,
     dependencies = { "tpope/vim-rhubarb" },
     cmd = {
       "Gvdiffsplit",
@@ -159,7 +139,7 @@ return {
       "Gstatus",
     },
     config = function()
-      -- NOTE: On vimplugins we use config instead of opts.
+      -- NOTE: On vim plugins we use config instead of opts.
       vim.g.fugitive_no_maps = 1
     end,
   },
@@ -340,7 +320,7 @@ return {
           },
         },
         ui = {
-          prompt_icon = ">",
+          prompt_icon = require("base.utils").get_icon("PromptPrefix"),
         },
       }
     end,
@@ -361,130 +341,71 @@ return {
   --   opts = { suggesion = { enabled = false }, panel = { enabled = false } },
   --   config = function (_, opts) require("copilot_cmp").setup(opts) end
   -- },
- -- [codecompanion.nvim] - Integrates LLMs with neovim
-  -- see: `:h codecompanion.txt`
-  -- link: https://github.com/olimorris/codecompanion.nvim
+
+  -- [guess-indent]
+  -- https://github.com/NMAC427/guess-indent.nvim
+  -- Note that this plugin won't autoformat the code.
+  -- It just set the buffer options to tabluate in a certain way.
   {
-      'olimorris/codecompanion.nvim',
-      event = 'VeryLazy',
-      branch = 'main',
-      dependencies = { 'nvim-lua/plenary.nvim', 'nvim-treesitter/nvim-treesitter', 'nvim-telescope/telescope.nvim', 'stevearc/dressing.nvim' },
-      -- stylua: ignore
-      keys = {
-          { '<leader>zi', '<cmd>CodeCompanion<cr>', mode = { 'n', 'v' }, desc = 'Inline Prompt [zi]' },
-          { '<leader>zz', '<cmd>CodeCompanionChat<cr>', mode = { 'n', 'v' }, desc = 'Open Chat [zz]' },
-          { '<leader>zt', '<cmd>CodeCompanionToggle<cr>', mode = { 'n', 'v' }, desc = 'Toggle Chat [zt]' },
-          { '<leader>za', '<cmd>CodeCompanionActions<cr>', mode = { 'n', 'v' }, desc = 'Actions [za]' },
-          { '<leader>zp', '<cmd>CodeCompanionAdd<cr>', mode = { 'v' }, desc = 'Paste Selected to the Chat [zp]' },
-      },
-      config = function()
-          require('codecompanion').setup {
-              adapters = {
-                  ollama = function()
-                      return require('codecompanion.adapters').extend('ollama', {
-                          env = {
-                              url = "http://127.0.0.1:11434",
-                          },
-                          schema = {
-                              model = {
-                                  default = 'qwen2.5-coder:latest',
-                                  -- default = "llama3.1:8b-instruct-q8_0",
-                              },
-                              num_ctx = {
-                                  default = 32768,
-                              },
-                          },
-                      })
-                  end,
-              },
-              strategies = {
-                  chat = { adapter = 'ollama', },
-                  inline = { adapter = 'ollama', },
-                  agent = { adapter = 'ollama', },
-              },
-              -- GENERAL OPTIONS ----------------------------------------------------------
-              opts = {
-                  log_level = 'TRACE', -- TRACE|DEBUG|ERROR|INFO
-                  -- If this is false then any default prompt that is marked as containing code
-                  -- will not be sent to the LLM. Please note that whilst I have made every
-                  -- effort to ensure no code leakage, using this is at your own risk
-                  send_code = true,
-                  use_default_actions = true, -- Show the default actions in the action palette?
-                  use_default_prompts = true, -- Show the default prompts in the action palette?
-              },
-          }
-      end,
+    "NMAC427/guess-indent.nvim",
+    event = "User BaseFile",
+    opts = {}
   },
+
+  --  COMPILER ----------------------------------------------------------------
+  --  compiler.nvim [compiler]
+  --  https://github.com/zeioth/compiler.nvim
   {
-    "yetone/avante.nvim",
-    event = "VeryLazy",
-    lazy = false,
-    version = false, -- set this if you want to always pull the latest change
-    opts = {
-      provider = "ollama",
-      vendors = {
-        ---@type AvanteProvider
-        ollama = {
-          ["local"] = true,
-          endpoint = "127.0.0.1:11434/v1",
-          --model = "llama3.1:8b-instruct-q8_0",
-          model = "qwen2.5-coder:latest",
-          parse_curl_args = function(opts, code_opts)
-            return {
-              url = opts.endpoint .. "/chat/completions",
-              headers = {
-                ["Accept"] = "application/json",
-                ["Content-Type"] = "application/json",
-              },
-              body = {
-                model = opts.model,
-                messages = require("avante.providers").copilot.parse_message(code_opts), -- you can make your own message, but this is very advanced
-                max_tokens = 131072,
-                stream = true,
-              },
-            }
-          end,
-          parse_response_data = function(data_stream, event_state, opts)
-            require("avante.providers").openai.parse_response(data_stream, event_state, opts)
-          end,
-        },
-      },
+    "zeioth/compiler.nvim",
+    cmd = {
+      "CompilerOpen",
+      "CompilerToggleResults",
+      "CompilerRedo",
+      "CompilerStop"
     },
-    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-    build = "make",
-    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-    dependencies = {
-      "stevearc/dressing.nvim",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      --- The below dependencies are optional,
-      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
-      "zbirenbaum/copilot.lua", -- for providers='copilot'
-      {
-        -- support for image pasting
-	"HakonHarnes/img-clip.nvim",
-	event = "VeryLazy",
-	opts = {
-	  -- recommended settings
-	  default = {
-	    embed_image_as_base64 = false,
-	    prompt_for_file_name = false,
-	    drag_and_drop = {
-	      insert_mode = true,
-	    },
-	    -- required for Windows users
-	      use_absolute_path = true,
-	  },
-	},
-	{
-	  -- Make sure to set this up properly if you have lazy=true
-	  'MeanderingProgrammer/render-markdown.nvim',
-	  opts = {
-		  file_types = { "markdown", "Avante" },
-	  },
-	  ft = { "markdown", "Avante" },
-	},
+    dependencies = { "stevearc/overseer.nvim" },
+    opts = {},
+  },
+
+  --  overseer [task runner]
+  --  https://github.com/stevearc/overseer.nvim
+  --  If you need to close a task immediately:
+  --  press ENTER in the output menu on the task you wanna close.
+  {
+    "stevearc/overseer.nvim",
+    cmd = {
+      "OverseerOpen",
+      "OverseerClose",
+      "OverseerToggle",
+      "OverseerSaveBundle",
+      "OverseerLoadBundle",
+      "OverseerDeleteBundle",
+      "OverseerRunCmd",
+      "OverseerRun",
+      "OverseerInfo",
+      "OverseerBuild",
+      "OverseerQuickAction",
+      "OverseerTaskAction",
+      "OverseerClearCache"
+    },
+    opts = {
+     task_list = { -- the window that shows the results.
+        direction = "bottom",
+        min_height = 25,
+        max_height = 25,
+        default_detail = 1,
       },
+      -- component_aliases = {
+      --   default = {
+      --     -- Behaviors that will apply to all tasks.
+      --     "on_exit_set_status",                   -- don't delete this one.
+      --     "on_output_summarize",                  -- show last line on the list.
+      --     "display_duration",                     -- display duration.
+      --     "on_complete_notify",                   -- notify on task start.
+      --     "open_output",                          -- focus last executed task.
+      --     { "on_complete_dispose", timeout=300 }, -- dispose old tasks.
+      --   },
+      -- },
     },
   },
 
@@ -523,6 +444,10 @@ return {
 
       -- Visual basic dotnet
       dap.configurations.vb = dap.configurations.cs
+
+      -- Java
+      -- Note: The java debugger jdtls is automatically spawned and configured
+      -- by the plugin 'nvim-java' in './3-dev-core.lua'.
 
       -- Python
       dap.adapters.python = {
@@ -806,6 +731,7 @@ return {
       "rcarriga/cmp-dap",
       "jay-babu/mason-nvim-dap.nvim",
       "jbyuki/one-small-step-for-vimkind",
+      "nvim-java/nvim-java",
     },
   },
 
@@ -851,31 +777,125 @@ return {
     end,
   },
 
+  --  TESTING -----------------------------------------------------------------
+  --  Run tests inside of nvim [unit testing]
+  --  https://github.com/nvim-neotest/neotest
+  --
+  --
+  --  MANUAL:
+  --  -- Unit testing:
+  --  To tun an unit test you can run any of these commands:
+  --
+  --    :Neotest run      -- Runs the nearest test to the cursor.
+  --    :Neotest stop     -- Stop the nearest test to the cursor.
+  --    :Neotest run file -- Run all tests in the file.
+  --
+  --  -- E2e and Test Suite
+  --  Normally you will prefer to open your e2e framework GUI outside of nvim.
+  --  But you have the next commands in ../base/3-autocmds.lua:
+  --
+  --    :TestNodejs    -- Run all tests for this nodejs project.
+  --    :TestNodejsE2e -- Run the e2e tests/suite for this nodejs project.
   {
-    "dhananjaylatkar/cscope_maps.nvim",
+    "nvim-neotest/neotest",
+    cmd = { "Neotest" },
     dependencies = {
-       "folke/which-key.nvim", -- optional [for whichkey hints]
-       "nvim-telescope/telescope.nvim", -- optional [for picker="telescope"]
-       "ibhagwan/fzf-lua", -- optional [for picker="fzf-lua"]
-       "nvim-tree/nvim-web-devicons", -- optional [for devicons in telescope or fzf]
+      "sidlatau/neotest-dart",
+      "Issafalcon/neotest-dotnet",
+      "jfpedroza/neotest-elixir",
+      "fredrikaverpil/neotest-golang",
+      "rcasia/neotest-java",
+      "nvim-neotest/neotest-jest",
+      "olimorris/neotest-phpunit",
+      "nvim-neotest/neotest-python",
+      "rouge8/neotest-rust",
+      "lawrence-laz/neotest-zig",
     },
-    opts = {
-      skip_input_prompt = true, -- doesn't ask for input
+    opts = function()
+      return {
+        -- your neotest config here
+        adapters = {
+          require("neotest-dart"),
+          require("neotest-dotnet"),
+          require("neotest-elixir"),
+          require("neotest-golang"),
+          require("neotest-java"),
+          require("neotest-jest"),
+          require("neotest-phpunit"),
+          require("neotest-python"),
+          require("neotest-rust"),
+          require("neotest-zig"),
+        },
+      }
+    end,
+    config = function(_, opts)
+      -- get neotest namespace (api call creates or returns namespace)
+      local neotest_ns = vim.api.nvim_create_namespace "neotest"
+      vim.diagnostic.config({
+        virtual_text = {
+          format = function(diagnostic)
+            local message = diagnostic.message:gsub("\n", " "):gsub("\t", " "):gsub("%s+", " "):gsub("^%s+", "")
+            return message
+          end,
+        },
+      }, neotest_ns)
+      require("neotest").setup(opts)
+    end,
+  },
 
-      -- cscope related defaults
-      cscope = {
-        -- location of cscope db file
-        db_file = "./cscope.out", -- DB or table of DBs
-        -- NOTE:
-        --   when table of DBs is provided -
-        --   first DB is "primary" and others are "secondary"
-        --   primary DB is used for build and project_rooter
-        db_build_cmd_args = { "-bR" },
-        -- cscope executable
-        exec = "cscope", -- "cscope" or "gtags-cscope"
-        -- choose your fav picker
-        picker = "telescope", -- "quickfix", "telescope", "fzf-lua" or "mini-pick"
+  --  Shows a float panel with the [code coverage]
+  --  https://github.com/andythigpen/nvim-coverage
+  --
+  --  Your project must generate coverage/lcov.info for this to work.
+  --
+  --  On jest, make sure your packages.json file has this:
+  --  "tests": "jest --coverage"
+  --
+  --  If you use other framework or language, refer to nvim-coverage docs:
+  --  https://github.com/andythigpen/nvim-coverage/blob/main/doc/nvim-coverage.txt
+  {
+    "zeioth/nvim-coverage", -- Our fork until all our PRs are merged.
+    cmd = {
+      "Coverage",
+      "CoverageLoad",
+      "CoverageLoadLcov",
+      "CoverageShow",
+      "CoverageHide",
+      "CoverageToggle",
+      "CoverageClear",
+      "CoverageSummary",
+    },
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {
+      summary = {
+        min_coverage = 80.0, -- passes if higher than
       },
     },
+    config = function(_, opts) require("coverage").setup(opts) end,
   },
+
+  -- LANGUAGE IMPROVEMENTS ----------------------------------------------------
+  -- guttentags_plus [auto generate C/C++ tags]
+  -- https://github.com/skywind3000/gutentags_plus
+  -- This plugin is necessary for using <C-]> (go to ctag).
+  {
+    "skywind3000/gutentags_plus",
+    ft = { "c", "cpp" },
+    dependencies = { "ludovicchabant/vim-gutentags" },
+    config = function()
+      -- NOTE: On vimplugins we use config instead of opts.
+      vim.g.gutentags_plus_nomap = 1
+      vim.g.gutentags_resolve_symlinks = 1
+      vim.g.gutentags_cache_dir = vim.fn.stdpath "cache" .. "/tags"
+      vim.api.nvim_create_autocmd("FileType", {
+        desc = "Auto generate C/C++ tags",
+        callback = function()
+          local is_c = vim.bo.filetype == "c" or vim.bo.filetype == "cpp"
+          if is_c then vim.g.gutentags_enabled = 1
+          else vim.g.gutentags_enabled = 0 end
+        end,
+      })
+    end,
+  },
+
 } -- end of return
