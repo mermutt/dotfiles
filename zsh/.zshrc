@@ -28,7 +28,6 @@ compinit -C -d ~/.config/zsh/zcompdump
 autoload -Uz add-zsh-hook
 autoload -Uz vcs_info
 precmd () { vcs_info }
-_comp_options+=(globdots)
 
 zstyle ':completion:*' verbose true
 zstyle ':completion:*:*:*:*:*' menu select
@@ -82,13 +81,11 @@ bindkey -v
 
 PS1='%B%F{blue}%f%b  %B%F{magenta}%n%f%b $(dir_icon)  %B%F{red}%~%f%b${vcs_info_msg_0_} %(?.%B%F{green}.%F{red})%f%b '
 
-#  ┌─┐┬  ┬ ┬┌─┐┬┌┐┌┌─┐
-#  ├─┘│  │ ││ ┬││││└─┐
-#  ┴  ┴─┘└─┘└─┘┴┘└┘└─┘
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-source /usr/share/zsh/plugins/zsh-auto-notify/auto-notify.plugin.zsh
+
+# Location specific settings.
+if [ -f ~/.zshrc.local ]; then
+    . ~/.zshrc.local
+fi
 
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down

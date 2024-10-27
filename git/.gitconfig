@@ -43,10 +43,6 @@
 
 [push]
 	default = simple
-
-[credential]
-	helper = store
-
 [commit]
 	template = ~/.git-commit-message
 
