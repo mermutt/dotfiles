@@ -210,55 +210,6 @@ maps.x["<Tab>"] = { ">gv", desc = "indent line" }
 maps.x["<"] = { "<gv", desc = "unindent line" }
 maps.x[">"] = { ">gv", desc = "indent line" }
 
--- improved gg --------------------------------------------------------------
-maps.n["gg"] = {
-  function()
-    vim.g.minianimate_disable = true
-    if vim.v.count > 0 then
-      vim.cmd("normal! " .. vim.v.count .. "gg")
-    else
-      vim.cmd("normal! gg0")
-    end
-    vim.g.minianimate_disable = false
-  end,
-  desc = "gg and go to the first position",
-}
-maps.n["G"] = {
-  function()
-    vim.g.minianimate_disable = true
-    vim.cmd("normal! G$")
-    vim.g.minianimate_disable = false
-  end,
-  desc = "G and go to the last position",
-}
-maps.x["gg"] = {
-  function()
-    vim.g.minianimate_disable = true
-    if vim.v.count > 0 then
-      vim.cmd("normal! " .. vim.v.count .. "gg")
-    else
-      vim.cmd("normal! gg0")
-    end
-    vim.g.minianimate_disable = false
-  end,
-  desc = "gg and go to the first position (visual)",
-}
-maps.x["G"] = {
-  function()
-    vim.g.minianimate_disable = true
-    vim.cmd("normal! G$")
-    vim.g.minianimate_disable = false
-  end,
-  desc = "G and go to the last position (visual)",
-}
-maps.n["<C-a>"] = { -- to move to the previous position press ctrl + oo
-  function()
-    vim.g.minianimate_disable = true
-    vim.cmd("normal! gg0vG$")
-    vim.g.minianimate_disable = false
-  end,
-  desc = "Visually select all",
-}
 
 -- packages -----------------------------------------------------------------
 -- lazy
@@ -293,6 +244,12 @@ maps.n["<leader>X"] = { -- Close window and buffer at the same time.
 maps.n["<leader>C"] = { -- Close buffer keeping the window.
   function() require("heirline-components.buffer").close() end,
   desc = "Close buffer",
+}
+maps.n["<leader>bw"] = {     -- Closes the window
+  function()
+    vim.cmd("silent! close") -- Be aware you can't close the last window
+  end,
+  desc = "Close window",
 }
 maps.n["<leader>ba"] = {
   function() vim.cmd("wa") end,
