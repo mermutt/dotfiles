@@ -15,7 +15,7 @@ if [ -d "$HOME/.local/bin" ] ;
 fi
 
 #  ┬  ┌─┐┌─┐┌┬┐  ┌─┐┌┐┌┌─┐┬┌┐┌┌─┐
-#  │  │ │├─┤ ││  ├┤ ││││ ┬││││├┤ 
+#  │  │ │├─┤ ││  ├┤ ││││ ┬││││├┤
 #  ┴─┘└─┘┴ ┴─┴┘  └─┘┘└┘└─┘┴┘└┘└─┘
 autoload -Uz compinit
 
@@ -36,6 +36,7 @@ zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 
 zstyle ':completion:*:warnings' format "%B%F{red}No matches for:%f %F{magenta}%d%b"
 zstyle ':completion:*:descriptions' format '%F{yellow}[-- %d --]%f'
 zstyle ':vcs_info:*' formats ' %B%s-[%F{magenta}%f %F{yellow}%b%f]-'
+zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
 #  ┬ ┬┌─┐┬┌┬┐┬┌┐┌┌─┐  ┌┬┐┌─┐┌┬┐┌─┐
 #  │││├─┤│ │ │││││ ┬   │││ │ │ └─┐
@@ -50,7 +51,7 @@ bindkey "^I" expand-or-complete-with-dots
 
 #  ┬ ┬┬┌─┐┌┬┐┌─┐┬─┐┬ ┬
 #  ├─┤│└─┐ │ │ │├┬┘└┬┘
-#  ┴ ┴┴└─┘ ┴ └─┘┴└─ ┴ 
+#  ┴ ┴┴└─┘ ┴ └─┘┴└─ ┴
 HISTFILE=~/.config/zsh/zhistory
 HISTSIZE=5000
 SAVEHIST=5000
@@ -68,7 +69,7 @@ setopt HIST_FIND_NO_DUPS   # When searching history don't display results alread
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 
 #  ┌┬┐┬ ┬┌─┐  ┌─┐┬─┐┌─┐┌┬┐┌─┐┌┬┐
-#   │ ├─┤├┤   ├─┘├┬┘│ ││││├─┘ │ 
+#   │ ├─┤├┤   ├─┘├┬┘│ ││││├─┘ │
 #   ┴ ┴ ┴└─┘  ┴  ┴└─└─┘┴ ┴┴   ┴
 function dir_icon {
   if [[ "$PWD" == "$HOME" ]]; then
@@ -79,8 +80,17 @@ function dir_icon {
 }
 bindkey -v
 
-PS1='%B%F{blue}%f%b  %B%F{magenta}%n%f%b $(dir_icon)  %B%F{red}%~%f%b${vcs_info_msg_0_} %(?.%B%F{green}.%F{red})%f%b '
+PS1='%B%F{blue}%f%b  %B%F{magenta}%n@${${(%):-%m}##*-}%f%b $(dir_icon)  %B%F{red}%\~%f%b${vcs_info_msg_0_} %(?.%B%F{green}.%F{red})%f%b '
 
+# #  ┌─┐┬  ┬ ┬┌─┐┬┌┐┌┌─┐
+# #  ├─┘│  │ ││ ┬││││└─┐
+# #  ┴  ┴─┘└─┘└─┘┴┘└┘└─┘
+#    The following plugins has been moved into ~/.zshrc.local
+# source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+# source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source ~/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+# source ~/.zsh/plugins/zsh-auto-notify/auto-notify.plugin.zsh
+# source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
 
 # Location specific settings.
 if [ -f ~/.zshrc.local ]; then
@@ -90,12 +100,10 @@ fi
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
-
 # OPENAI_API_KEY
 if [ -f ~/.sk ]; then
     source ~/.sk
 fi
-
 
 #  ┌─┐┬  ┬┌─┐┌─┐
 #  ├─┤│  │├─┤└─┐
@@ -104,13 +112,18 @@ fi
 alias tmux='TERM=screen-256color tmux'
 alias tma='tmux attach'
 
-alias  l='lsd --group-directories-first'
-alias ls='lsd -a --group-directories-first'
-alias ll='lsd -la --group-directories-first'
+alias  l='ls --color=always'
+alias ll='ls -lh --color=always'
+alias la='ls -alh --color=always'
+
+#alias ls='lsd -a --group-directories-first'
 
 #  ┌─┐┬ ┬┌┬┐┌─┐  ┌─┐┌┬┐┌─┐┬─┐┌┬┐
-#  ├─┤│ │ │ │ │  └─┐ │ ├─┤├┬┘ │ 
-#  ┴ ┴└─┘ ┴ └─┘  └─┘ ┴ ┴ ┴┴└─ ┴ 
+#  ├─┤│ │ │ │ │  └─┐ │ ├─┤├┬┘ │
+#  ┴ ┴└─┘ ┴ └─┘  └─┘ ┴ ┴ ┴┴└─ ┴
+
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
 
 # git hotkeys - especially <C-g><C-b> to bring up fzf with all git branches
 if [ -f ~/.gitrc ]; then

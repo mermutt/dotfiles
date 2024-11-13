@@ -1,0 +1,24 @@
+export ARMCC5BIN=/tools/arm/DS-5_v5.29.3/sw/ARMCompiler5.06u6/bin
+export ARM_PRODUCT_PATH=/tools/arm/DS-5_v5.29.3/sw/mappings
+export ARMLMD_LICENSE_FILE=8224@epd-flexlm:8224@epd-flexlm1
+export PATH=~/.local/bin:/tools/cmake/bin:$PATH
+export ARM_COMPILER_6=/tools/arm/ARMCompiler6.16
+
+export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+export JENKINS_TOKEN=11c7ac9e95ed82434bc93ff91f75a532e9
+
+export PDSH_RCMD_TYPE=ssh
+
+# export http_proxy=105.128.57.33:80
+# export https_proxy=105.128.57.33:80
+export no_proxy=".samsungds.net, 127.0.0.1, 192.168.0.0/16, 105.128.0.0/16, 105.128.44.10, 10.227.121.51, 12.27.1.202, 105.128.94.150, 105.140.169.191, 105.140.169.192, 105.140.169.193, 105.128.82.49"
+
+#  ┌─┐┬  ┬ ┬┌─┐┬┌┐┌┌─┐
+#  ├─┘│  │ ││ ┬││││└─┐
+#  ┴  ┴─┘└─┘└─┘┴┘└┘└─┘
+source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+source ~/.zsh/plugins/zsh-auto-notify/auto-notify.plugin.zsh
+source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
