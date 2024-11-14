@@ -6,14 +6,16 @@
 #  └┐┌┘├─┤├┬┘└─┐
 #   └┘ ┴ ┴┴└─└─┘
 export EDITOR='vim'
-export TERMINAL='wezterm'
+export TERMINAL='kitty'
 export BROWSER='firefox'
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git --exclude external'
 
-export LANG=ru_RU.UTF-8
-export LC_ALL=ru_RU.UTF-8
+if [ -d "$HOME/.local/bin" ] ;
+  then PATH="$HOME/usr/local/bin:$PATH"
+fi
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 #  ┬  ┌─┐┌─┐┌┬┐  ┌─┐┌┐┌┌─┐┬┌┐┌┌─┐
 #  │  │ │├─┤ ││  ├┤ ││││ ┬││││├┤
@@ -86,12 +88,11 @@ PS1='%B%F{blue}%f%b %B%F{blue}%n@${${(%):-%m}##*-}%f%b $(dir_icon) %B%F{cyan}
 # #  ┌─┐┬  ┬ ┬┌─┐┬┌┐┌┌─┐
 # #  ├─┘│  │ ││ ┬││││└─┐
 # #  ┴  ┴─┘└─┘└─┘┴┘└┘└─┘
-#    The following plugins has been moved into ~/.zshrc.local
-# source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-# source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# source ~/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-# source ~/.zsh/plugins/zsh-auto-notify/auto-notify.plugin.zsh
-# source ~/.zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
+source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $HOMEBREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $HOMEBREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $HOMEBREW_PREFIX/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+source /usr/local/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
 
 # Location specific settings.
 if [ -f ~/.zshrc.local ]; then
@@ -119,16 +120,9 @@ alias la='ls -alh --color=always'
 
 alias rgi='rg -i'
 
-#alias ls='lsd -a --group-directories-first'
-
 #  ┌─┐┬ ┬┌┬┐┌─┐  ┌─┐┌┬┐┌─┐┬─┐┌┬┐
 #  ├─┤│ │ │ │ │  └─┐ │ ├─┤├┬┘ │
 #  ┴ ┴└─┘ ┴ └─┘  └─┘ ┴ ┴ ┴┴└─ ┴
 
 # Set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
-
-# git hotkeys - especially <C-g><C-b> to bring up fzf with all git branches
-if [ -f ~/.gitrc ]; then
-    . ~/.gitrc
-fi
