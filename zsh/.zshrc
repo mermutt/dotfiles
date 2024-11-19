@@ -9,6 +9,8 @@ export EDITOR='vim'
 export TERMINAL='wezterm'
 export BROWSER='firefox'
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 if [ -d "$HOME/.local/bin" ] ;
   then PATH="$HOME/.local/bin:$PATH"
@@ -73,14 +75,14 @@ setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 #   ┴ ┴ ┴└─┘  ┴  ┴└─└─┘┴ ┴┴   ┴
 function dir_icon {
     if [[ "$PWD" == $HOME(|/*) ]]; then
-    echo "%B%F{black}%f%b"
+    echo "%B%F{cyan}%f%b"
   else
     echo "%B%F{cyan}%f%b"
   fi
 }
 bindkey -v
 
-PS1='%B%F{blue}%f%b %B%F{magenta}%n@${${(%):-%m}##*-}%f%b $(dir_icon) %B%F{black}%2~ %f%b${vcs_info_msg_0_} %(?.%B%F{green}.%F{red})%f%b '
+PS1='%B%F{blue}%f%b %B%F{blue}%n@${${(%):-%m}##*-}%f%b $(dir_icon) %B%F{cyan}%2~ %f%b${vcs_info_msg_0_} %(?.%B%F{green}.%F{red})%f%b '
 
 # #  ┌─┐┬  ┬ ┬┌─┐┬┌┐┌┌─┐
 # #  ├─┘│  │ ││ ┬││││└─┐
