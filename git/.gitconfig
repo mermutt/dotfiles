@@ -38,11 +38,18 @@
 	abbrev = 9
 	autocrlf = false
 
+[http]
+        sslVerify = false
+
+[credential]
+	helper = store
+
 [color]
 	ui = auto
 
 [push]
 	default = simple
+
 [commit]
 	template = ~/.git-commit-message
 
@@ -65,8 +72,10 @@
 	file-style = "bold purple"
 	hunk-header-style = "bold blue"
 	light = false
+
 [delta "interactive"]
 	keep-plus-minus-markers = false
+
 [delta "decorations"]
 	commit-decoration-style = blue ol
 	commit-style = raw
@@ -74,16 +83,16 @@
 	hunk-header-line-number-style = "#067a00"
 	hunk-header-style = line-number syntax
 
-[diff]
-	colorMoved = default
 [difftool]
 	prompt = true
 	tool = fugitive
 
 [merge]
 	tool = fugitive
+
 [mergetool]
 	prompt = true
 	keepBackup = false
+
 [mergetool "fugitive"]
 	cmd = nvim -f -c \"Gdiffsplit!\" \"$MERGED\"
