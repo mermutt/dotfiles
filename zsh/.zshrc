@@ -72,7 +72,7 @@ setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 #   │ ├─┤├┤   ├─┘├┬┘│ ││││├─┘ │
 #   ┴ ┴ ┴└─┘  ┴  ┴└─└─┘┴ ┴┴   ┴
 function dir_icon {
-  if [[ "$PWD" == "$HOME" ]]; then
+    if [[ "$PWD" == $HOME(|/*) ]]; then
     echo "%B%F{black}%f%b"
   else
     echo "%B%F{cyan}%f%b"
@@ -80,7 +80,7 @@ function dir_icon {
 }
 bindkey -v
 
-PS1='%B%F{blue}%f%b  %B%F{magenta}%n@${${(%):-%m}##*-}%f%b $(dir_icon)  %B%F{red}%\~%f%b${vcs_info_msg_0_} %(?.%B%F{green}.%F{red})%f%b '
+PS1='%B%F{blue}%f%b %B%F{magenta}%n@${${(%):-%m}##*-}%f%b $(dir_icon) %B%F{black}%2~ %f%b${vcs_info_msg_0_} %(?.%B%F{green}.%F{red})%f%b '
 
 # #  ┌─┐┬  ┬ ┬┌─┐┬┌┐┌┌─┐
 # #  ├─┘│  │ ││ ┬││││└─┐
