@@ -27,16 +27,32 @@ return {
           { '<leader>zp', '<cmd>CodeCompanionAdd<cr>', mode = { 'v' }, desc = 'Paste Selected to the Chat [zp]' },
       },
       config = function()
-          require('codecompanion').setup {
+          require("codecompanion").setup({
               adapters = {
-                  ollama = function()
-                      return require('codecompanion.adapters').extend('ollama', {
+                  openai_compatible = function()
+                      return require("codecompanion.adapters").extend("openai_compatible", {
+                          url = "http://ted-cat-avery:4000/v1/chat/completions",
                           env = {
-                              url = "http://127.0.0.1:11434",
+                              url = "http://ted-cat-avery:4000",
+                              api_key = "OPENAI_API_KEY",
+                          },
+                          schema = {
+                              model = { default = "premium", },
+                              num_ctx = { default = 16384, },
+                              num_predict = { default = -1, },
+                          },
+                      })
+                  end,
+                  ollama = function()
+                      return require("codecompanion.adapters").extend("ollama", {
+                          env = {
+                              url = "http://doe:11434",
                           },
                           schema = {
                               model = {
-                                  default = 'qwen2.5-coder:latest',
+                                  default = "deepseek-coder-v2:16b-lite-instruct-fp16",
+                                  -- default = "qwen2.5-coder:32b-instruct-fp16",
+                                  -- default = "qwq:32b-preview-fp16",
                                   -- default = "llama3.1:8b-instruct-q8_0",
                               },
                               num_ctx = {
@@ -47,13 +63,15 @@ return {
                   end,
               },
               strategies = {
-                  chat = { adapter = 'ollama', },
-                  inline = { adapter = 'ollama', },
-                  agent = { adapter = 'ollama', },
+                  chat = { adapter = "ollama", },
+                  -- chat = { adapter = "openai_compatible", },
+                  inline = { adapter = "ollama", },
+                  -- inline = { adapter = "openai_compatible", },
+                  agent = { adapter = "ollama", },
+                  -- agent = { adapter = "openai_compatible", },
               },
-              -- GENERAL OPTIONS ----------------------------------------------------------
               opts = {
-                  log_level = 'TRACE', -- TRACE|DEBUG|ERROR|INFO
+                  log_level = 'DEBUG', -- TRACE|DEBUG|ERROR|INFO
                   -- If this is false then any default prompt that is marked as containing code
                   -- will not be sent to the LLM. Please note that whilst I have made every
                   -- effort to ensure no code leakage, using this is at your own risk
@@ -61,7 +79,7 @@ return {
                   use_default_actions = true, -- Show the default actions in the action palette?
                   use_default_prompts = true, -- Show the default prompts in the action palette?
               },
-          }
+          })
       end,
   },
 
@@ -77,9 +95,11 @@ return {
         ---@type AvanteProvider
         ollama = {
           ["local"] = true,
-          endpoint = "127.0.0.1:11434/v1",
-          --model = "llama3.1:8b-instruct-q8_0",
-          model = "qwen2.5-coder:latest",
+--        endpoint = "http://ted-cat-avery:4000/v1",
+--        model = "qwen2.5-coder:latest",
+          endpoint = "http://doe:11434/v1",
+          model = "deepseek-coder-v2:16b-lite-instruct-fp16",
+          -- model = "qwen2.5-coder:32b-instruct-fp16",
           parse_curl_args = function(opts, code_opts)
             return {
               url = opts.endpoint .. "/chat/completions",
