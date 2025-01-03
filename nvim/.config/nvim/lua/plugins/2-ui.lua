@@ -677,11 +677,10 @@ return {
   --  This plugin only flases on redo.
   --  But we also have a autocmd to flash on yank.
   {
-    "tzachar/highlight-undo.nvim",
+    "zeioth/highlight-undo.nvim",
     event = "User BaseDefered",
     opts = {
       duration = 150,
-      undo = { hlgroup = 'IncSearch' },
       redo = { hlgroup = 'IncSearch' },
     },
     config = function(_, opts)
@@ -691,7 +690,9 @@ return {
       vim.api.nvim_create_autocmd("TextYankPost", {
         desc = "Highlight yanked text",
         pattern = "*",
-        callback = function() vim.hl.on_yank() end,
+        callback = function()
+          (vim.hl or vim.highlight).on_yank()
+        end,
       })
     end,
   },

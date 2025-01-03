@@ -62,7 +62,7 @@ vim.opt.backspace:append { "nostop" } -- Don't stop backspace at insert.
 vim.opt.diffopt:append { "algorithm:histogram", "linematch:60" } -- Enable linematch diff algorithm
 
 local is_android = vim.fn.isdirectory('/data') == 1
-if is_android then vim.opt.mouse = "v" else vim.opt.mouse = "" end -- Enable scroll for android
+if is_android then vim.opt.mouse = "v" else vim.opt.mouse = "a" end -- Enable scroll for android
 
 -- Globals --------------------------------------------------------------------
 vim.g.mapleader = " " -- Set leader key.

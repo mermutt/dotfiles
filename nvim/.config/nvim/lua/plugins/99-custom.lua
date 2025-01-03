@@ -53,7 +53,6 @@ return {
                                   default = "deepseek-coder-v2:16b-lite-instruct-fp16",
                                   -- default = "qwen2.5-coder:32b-instruct-fp16",
                                   -- default = "qwq:32b-preview-fp16",
-                                  -- default = "llama3.1:8b-instruct-q8_0",
                               },
                               num_ctx = {
                                   default = 32768,

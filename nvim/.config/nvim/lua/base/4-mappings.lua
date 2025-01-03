@@ -210,7 +210,6 @@ maps.x["<Tab>"] = { ">gv", desc = "indent line" }
 maps.x["<"] = { "<gv", desc = "unindent line" }
 maps.x[">"] = { ">gv", desc = "indent line" }
 
-
 -- packages -----------------------------------------------------------------
 -- lazy
 maps.n["<leader>p"] = icons.p
@@ -251,6 +250,7 @@ maps.n["<leader>bw"] = {     -- Closes the window
   end,
   desc = "Close window",
 }
+
 maps.n["<leader>ba"] = {
   function() vim.cmd("wa") end,
   desc = "Write all changed buffers",
@@ -1486,21 +1486,24 @@ if is_autoformat_enabled and is_filetype_allowed and is_filetype_ignored then
   }
 
   -- Goto help
+  local lsp_hover_config = require("base.utils.lsp").lsp_hover_config
   lsp_mappings.n["gh"] = {
-    function() vim.lsp.buf.hover() end,
+    function()
+      vim.lsp.buf.hover(lsp_hover_config)
+    end,
     desc = "Hover help",
   }
   lsp_mappings.n["gH"] = {
-    function() vim.lsp.buf.signature_help() end,
+    function() vim.lsp.buf.signature_help(lsp_hover_config) end,
     desc = "Signature help",
   }
 
   lsp_mappings.n["<leader>lh"] = {
-    function() vim.lsp.buf.hover() end,
+    function() vim.lsp.buf.hover(lsp_hover_config) end,
     desc = "Hover help",
   }
   lsp_mappings.n["<leader>lH"] = {
-    function() vim.lsp.buf.signature_help() end,
+    function() vim.lsp.buf.signature_help(lsp_hover_config) end,
     desc = "Signature help",
   }
 
