@@ -9,6 +9,9 @@ export EDITOR='vim'
 export TERMINAL='wezterm'
 export BROWSER='firefox'
 export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
+
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git --exclude external'
+
 export LANG=ru_RU.UTF-8
 export LC_ALL=ru_RU.UTF-8
 
@@ -113,6 +116,8 @@ alias tma='tmux attach'
 alias  l='ls --color=always'
 alias ll='ls -lh --color=always'
 alias la='ls -alh --color=always'
+
+alias rgi='rg -i'
 
 #alias ls='lsd -a --group-directories-first'
 
