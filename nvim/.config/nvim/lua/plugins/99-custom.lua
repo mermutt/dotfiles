@@ -50,9 +50,9 @@ return {
                           },
                           schema = {
                               model = {
+                                  -- default = "r1-1776:70b-distill-llama-q8_0",
+                                  -- default = "deepseek-r1:32b-qwen-distill-fp16",
                                   default = "deepseek-coder-v2:16b-lite-instruct-fp16",
-                                  -- default = "qwen2.5-coder:32b-instruct-fp16",
-                                  -- default = "qwq:32b-preview-fp16",
                               },
                               num_ctx = {
                                   default = 32768,

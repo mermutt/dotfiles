@@ -809,9 +809,15 @@ if is_available("telescope.nvim") then
     function() require("telescope.builtin").buffers() end,
     desc = "Find buffers",
   }
+--  maps.n["<leader>fw"] = {
+--    function() require("telescope.builtin").grep_string() end,
+--    desc = "Find word under cursor in project",
+--  }
   maps.n["<leader>fw"] = {
-    function() require("telescope.builtin").grep_string() end,
-    desc = "Find word under cursor in project",
+    function()
+      vim.cmd("FzfLua grep_cword")
+    end,
+    desc = "Find whole word under cursor using FzfLua",
   }
   maps.n["<leader>fC"] = {
     function() require("telescope.builtin").commands() end,

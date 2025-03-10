@@ -31,7 +31,7 @@
 	al = "!git config -l | grep alias | cut -c 7-"
 
 [core]
-	pager = delta
+        pager = delta
 	excludesfile = ~/.gitignore
 	preloadindex = true
 	editor = nvim
@@ -63,15 +63,17 @@
 
 [delta]
 	features = decorations
-	navigate = true
+	light = false
 	line-numbers = true
+	navigate = true
 	side-by-side = true
+	tabs = 4
+	tab-width = 4
 	minus-style = "red"
 	plus-style = "green dim"
 	commit-style = "bold yellow"
 	file-style = "bold purple"
 	hunk-header-style = "bold blue"
-	light = false
 
 [delta "interactive"]
 	keep-plus-minus-markers = false
