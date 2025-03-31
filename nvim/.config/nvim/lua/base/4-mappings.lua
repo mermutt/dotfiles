@@ -236,7 +236,7 @@ maps.n["<leader>pv"] = { "<cmd>DistroReadVersion<cr>", desc = "Distro version" }
 maps.n["<leader>pc"] = { "<cmd>DistroReadChangelog<cr>", desc = "Distro changelog" }
 
 -- buffers/tabs [buffers ]--------------------------------------------------
-maps.n["<leader>X"] = { -- Close window and buffer at the same time.
+maps.n["<leader>c"] = { -- Close window and buffer at the same time.
   function() require("heirline-components.buffer").wipe() end,
   desc = "Wipe buffer",
 }
@@ -805,15 +805,9 @@ if is_available("telescope.nvim") then
     function() require("telescope.builtin").buffers() end,
     desc = "Find buffers",
   }
---  maps.n["<leader>fw"] = {
---    function() require("telescope.builtin").grep_string() end,
---    desc = "Find word under cursor in project",
---  }
   maps.n["<leader>fw"] = {
-    function()
-      vim.cmd("FzfLua grep_cword")
-    end,
-    desc = "Find whole word under cursor using FzfLua",
+    function() vim.cmd("FzfLua grep_cword") end,
+    desc = "Find word under cursor in project",
   }
   maps.n["<leader>fC"] = {
     function() require("telescope.builtin").commands() end,
@@ -1223,7 +1217,7 @@ if is_available("markdown-preview.nvim") or is_available("markmap.nvim") or is_a
   -- Markdown preview
   if is_available("markdown-preview.nvim") then
     maps.n["<leader>Dp"] = {
-      function() vim.cmd("MarkdownPreview") end,
+      function() vim.cmd("silent! MarkdownPreview") end,
       desc = "Markdown preview",
     }
   end
@@ -1300,16 +1294,16 @@ function M.lsp_mappings(client, bufnr)
   local lsp_mappings = require("base.utils").get_mappings_template()
 
   -- Diagnostics
-  lsp_mappings.n["<leader>ld"] = { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" }
-  lsp_mappings.n["[d"] = { function()
-      -- TODO: Delete after dropping nvim 0.10 support.
-      if vim.fn.has('nvim-0.11') == 1 then vim.diagnostic.jump({ count = -1 })
-      else vim.diagnostic.goto_prev() end end, desc = "Previous diagnostic"
+  lsp_mappings.n["<leader>ld"] =
+  { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" }
+  lsp_mappings.n["[d"] = {
+    function() vim.diagnostic.jump({ count = -1 }) end,
+    desc = "Previous diagnostic",
   }
-  lsp_mappings.n["]d"] = { function()
-    -- TODO: Delete after dropping nvim 0.10 support.
-    if vim.fn.has('nvim-0.11') == 1 then vim.diagnostic.jump({ count = 1 })
-    else vim.diagnostic.goto_next() end end, desc = "Next diagnostic" }
+  lsp_mappings.n["]d"] = {
+    function() vim.diagnostic.jump({ count = 1 }) end,
+    desc = "Next diagnostic",
+  }
 
   -- Diagnostics
   lsp_mappings.n["gl"] = { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" }
