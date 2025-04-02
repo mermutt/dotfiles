@@ -805,8 +805,8 @@ if is_available("telescope.nvim") then
     function() require("telescope.builtin").buffers() end,
     desc = "Find buffers",
   }
-  maps.n["<leader>fw"] = {
-    function() vim.cmd("FzfLua grep_cword") end,
+  maps.n["<leader>Fw"] = {
+    function() require("telescope.builtin").grep_string() end,
     desc = "Find word under cursor in project",
   }
   maps.n["<leader>fC"] = {
@@ -863,7 +863,7 @@ if is_available("telescope.nvim") then
     end,
     desc = "Find themes",
   }
-  maps.n["<leader>ff"] = {
+  maps.n["<leader>Ff"] = {
     function()
       require("telescope.builtin").live_grep({
         additional_args = function(args)
@@ -874,13 +874,25 @@ if is_available("telescope.nvim") then
     end,
     desc = "Find words in project",
   }
-  maps.n["<leader>fF"] = {
+  maps.n["<leader>FF"] = {
     function() require("telescope.builtin").live_grep() end,
     desc = "Find words in project (no hidden)",
   }
   maps.n["<leader>f/"] = {
     function() require("telescope.builtin").current_buffer_fuzzy_find() end,
     desc = "Find words in current buffer",
+  }
+  maps.n["<leader>fw"] = {
+    function() vim.cmd("FzfLua grep_cword") end,
+    desc = "Find word under cursor in project",
+  }
+  maps.n["<leader>ff"] = {
+    function() vim.cmd("FzfLua files") end,
+    desc = "Find files in project with FzfLua",
+  }
+  maps.n["<leader>fF"] = {
+    function() vim.cmd("FzfLua live_grep") end,
+    desc = "Find words in project (no hidden)",
   }
 
   -- Some lsp keymappings are here because they depend on telescope
