@@ -342,20 +342,14 @@ return {
   },
 
   --  copilot [github code suggestions]
-  --  https://github.com/github/copilot.vim
+  --  https://github.com/zbirenbaum/copilot.lua
   --  As alternative to chatgpt, you can use copilot uncommenting this.
-  --  Then you must run :Copilot setup
-  -- {
-  --   "github/copilot.vim",
-  --   event = "User BaseFile"
-  -- },
-  -- copilot-cmp
-  -- https://github.com/zbirenbaum/copilot-cmp
-  -- {
-  --   "zbirenbaum/copilot-cmp",
-  --   opts = { suggesion = { enabled = false }, panel = { enabled = false } },
-  --   config = function (_, opts) require("copilot_cmp").setup(opts) end
-  -- },
+  --  Then you must run :Copilot auth
+  {
+    "zbirenbaum/copilot.lua",
+    event = "User BaseFile",
+    opts = {},
+  },
 
   -- [guess-indent]
   -- https://github.com/NMAC427/guess-indent.nvim
@@ -869,7 +863,7 @@ return {
   --  If you use other framework or language, refer to nvim-coverage docs:
   --  https://github.com/andythigpen/nvim-coverage/blob/main/doc/nvim-coverage.txt
   {
-    "zeioth/nvim-coverage", -- Our fork until all our PRs are merged.
+    "andythigpen/nvim-coverage",
     cmd = {
       "Coverage",
       "CoverageLoad",
@@ -895,7 +889,6 @@ return {
   -- This plugin is necessary for using <C-]> (go to ctag).
   {
     "skywind3000/gutentags_plus",
-    enabled = false,
     ft = { "c", "cpp", "lisp" },
     dependencies = { "ludovicchabant/vim-gutentags" },
     config = function()
