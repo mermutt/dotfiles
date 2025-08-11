@@ -171,11 +171,9 @@ return {
 
   -- nvim-java [java support]
   -- https://github.com/nvim-java/nvim-java
-  -- Reliable jdtls support. Must go before mason-lspconfig and lsp-config.
-  -- NOTE: Let's use our fork until they merge pull request
-  --       https://github.com/nvim-java/nvim-java/pull/376
+  -- Reliable jdtls support. Must go before lsp-config and mason-lspconfig.
   {
-    "zeioth/nvim-java",
+    "nvim-java/nvim-java",
     ft = { "java" },
     dependencies = {
       "MunifTanjim/nui.nvim",
@@ -201,6 +199,17 @@ return {
         '.git',
       },
     },
+    config = function(_, opts)
+      require("java").setup(opts)               -- Setup.
+      vim.api.nvim_create_autocmd("FileType", { -- Enable for java files.
+        desc = "Load this plugin for java files.",
+        callback = function()
+          local lspconf = utils.get_plugin_opts("nvim-lspconfig")
+          local is_java = vim.bo.filetype == "java"
+          if lspconf and is_java then require("lspconfig").jdtls.setup({}) end
+        end,
+      })
+    end
   },
 
   --  nvim-lspconfig [lsp configs]
@@ -209,7 +218,7 @@ return {
   {
     "neovim/nvim-lspconfig",
     event = "User BaseFile",
-    dependencies = "zeioth/nvim-java",
+    dependencies = "nvim-java/nvim-java",
   },
 
   -- mason-lspconfig [auto start lsp]
@@ -629,4 +638,3 @@ return {
   },
 
 }
-

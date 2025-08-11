@@ -130,6 +130,8 @@ maps.n["<Tab>"] = {
 --      is the keycode for scrolling, and remapping it would break it.
 if not is_android then
   -- only useful when the option clipboard is commented on ./1-options.lua
+  maps.n["<C-y>"] = { '"+y<esc>', desc = "Copy to cliboard" }
+  maps.x["<C-y>"] = { '"+y<esc>', desc = "Copy to cliboard" }
   maps.n["<C-d>"] = { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
   maps.x["<C-d>"] = { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
   maps.n["<C-p>"] = { '"+p<esc>', desc = "Paste from clipboard" }
@@ -209,6 +211,56 @@ maps.x["<S-Tab>"] = { "<gv", desc = "unindent line" }
 maps.x["<Tab>"] = { ">gv", desc = "indent line" }
 maps.x["<"] = { "<gv", desc = "unindent line" }
 maps.x[">"] = { ">gv", desc = "indent line" }
+
+-- improved gg --------------------------------------------------------------
+maps.n["gg"] = {
+  function()
+    vim.g.minianimate_disable = true
+    if vim.v.count > 0 then
+      vim.cmd("normal! " .. vim.v.count .. "gg")
+    else
+      vim.cmd("normal! gg0")
+    end
+    vim.g.minianimate_disable = false
+  end,
+  desc = "gg and go to the first position",
+}
+maps.n["G"] = {
+  function()
+    vim.g.minianimate_disable = true
+    vim.cmd("normal! G$")
+    vim.g.minianimate_disable = false
+  end,
+  desc = "G and go to the last position",
+}
+maps.x["gg"] = {
+  function()
+    vim.g.minianimate_disable = true
+    if vim.v.count > 0 then
+      vim.cmd("normal! " .. vim.v.count .. "gg")
+    else
+      vim.cmd("normal! gg0")
+    end
+    vim.g.minianimate_disable = false
+  end,
+  desc = "gg and go to the first position (visual)",
+}
+maps.x["G"] = {
+  function()
+    vim.g.minianimate_disable = true
+    vim.cmd("normal! G$")
+    vim.g.minianimate_disable = false
+  end,
+  desc = "G and go to the last position (visual)",
+}
+maps.n["<C-a>"] = { -- to move to the previous position press ctrl + oo
+  function()
+    vim.g.minianimate_disable = true
+    vim.cmd("normal! gg0vG$")
+    vim.g.minianimate_disable = false
+  end,
+  desc = "Visually select all",
+}
 
 -- packages -----------------------------------------------------------------
 -- lazy
@@ -509,7 +561,7 @@ if is_available("alpha-nvim") then
     function()
       local wins = vim.api.nvim_tabpage_list_wins(0)
       if #wins > 1
-          and vim.api.nvim_get_option_value("filetype", { win = wins[1] })
+          and vim.api.nvim_get_option_value("filetype", {})
           == "neo-tree"
       then
         vim.fn.win_gotoid(wins[2]) -- go to non-neo-tree window to toggle alpha
@@ -805,7 +857,7 @@ if is_available("telescope.nvim") then
     function() require("telescope.builtin").buffers() end,
     desc = "Find buffers",
   }
-  maps.n["<leader>Fw"] = {
+  maps.n["<leader>fw"] = {
     function() require("telescope.builtin").grep_string() end,
     desc = "Find word under cursor in project",
   }
@@ -863,7 +915,7 @@ if is_available("telescope.nvim") then
     end,
     desc = "Find themes",
   }
-  maps.n["<leader>Ff"] = {
+  maps.n["<leader>ff"] = {
     function()
       require("telescope.builtin").live_grep({
         additional_args = function(args)
@@ -874,25 +926,13 @@ if is_available("telescope.nvim") then
     end,
     desc = "Find words in project",
   }
-  maps.n["<leader>FF"] = {
+  maps.n["<leader>fF"] = {
     function() require("telescope.builtin").live_grep() end,
     desc = "Find words in project (no hidden)",
   }
   maps.n["<leader>f/"] = {
     function() require("telescope.builtin").current_buffer_fuzzy_find() end,
     desc = "Find words in current buffer",
-  }
-  maps.n["<leader>fw"] = {
-    function() vim.cmd("FzfLua grep_cword") end,
-    desc = "Find word under cursor in project",
-  }
-  maps.n["<leader>ff"] = {
-    function() vim.cmd("FzfLua files") end,
-    desc = "Find files in project with FzfLua",
-  }
-  maps.n["<leader>fF"] = {
-    function() vim.cmd("FzfLua live_grep") end,
-    desc = "Find words in project (no hidden)",
   }
 
   -- Some lsp keymappings are here because they depend on telescope

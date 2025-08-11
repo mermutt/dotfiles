@@ -46,14 +46,14 @@ return {
                   ollama = function()
                       return require("codecompanion.adapters").extend("ollama", {
                           env = {
-                              url = "http://doe:11434",
+                              url = "http://Mac:11434",
                           },
                           schema = {
                               model = {
                                   -- default = "r1-1776:70b-distill-llama-q8_0",
                                   -- default = "deepseek-r1:32b-qwen-distill-fp16",
                                   -- default = "deepseek-coder-v2:16b-lite-instruct-fp16",
-                                  default = "mistral-large:123b",
+                                  default = "qwen3:32b-fp16",
                               },
                               num_ctx = {
                                   default = 32768,
@@ -161,7 +161,7 @@ return {
         ollama = {
           ["local"] = true,
 --        endpoint = "http://ted-cat-avery:4000/v1",
-          endpoint = "http://doe:11434/v1",
+          endpoint = "http://Mac:11434/v1",
           model = "deepseek-coder-v2:16b-lite-instruct-fp16",
           parse_curl_args = function(opts, code_opts)
             return {
