@@ -130,8 +130,6 @@ maps.n["<Tab>"] = {
 --      is the keycode for scrolling, and remapping it would break it.
 if not is_android then
   -- only useful when the option clipboard is commented on ./1-options.lua
-  maps.n["<C-y>"] = { '"+y<esc>', desc = "Copy to cliboard" }
-  maps.x["<C-y>"] = { '"+y<esc>', desc = "Copy to cliboard" }
   maps.n["<C-d>"] = { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
   maps.x["<C-d>"] = { '"+y<esc>dd', desc = "Copy to clipboard and delete line" }
   maps.n["<C-p>"] = { '"+p<esc>', desc = "Paste from clipboard" }
@@ -211,56 +209,6 @@ maps.x["<S-Tab>"] = { "<gv", desc = "unindent line" }
 maps.x["<Tab>"] = { ">gv", desc = "indent line" }
 maps.x["<"] = { "<gv", desc = "unindent line" }
 maps.x[">"] = { ">gv", desc = "indent line" }
-
--- improved gg --------------------------------------------------------------
-maps.n["gg"] = {
-  function()
-    vim.g.minianimate_disable = true
-    if vim.v.count > 0 then
-      vim.cmd("normal! " .. vim.v.count .. "gg")
-    else
-      vim.cmd("normal! gg0")
-    end
-    vim.g.minianimate_disable = false
-  end,
-  desc = "gg and go to the first position",
-}
-maps.n["G"] = {
-  function()
-    vim.g.minianimate_disable = true
-    vim.cmd("normal! G$")
-    vim.g.minianimate_disable = false
-  end,
-  desc = "G and go to the last position",
-}
-maps.x["gg"] = {
-  function()
-    vim.g.minianimate_disable = true
-    if vim.v.count > 0 then
-      vim.cmd("normal! " .. vim.v.count .. "gg")
-    else
-      vim.cmd("normal! gg0")
-    end
-    vim.g.minianimate_disable = false
-  end,
-  desc = "gg and go to the first position (visual)",
-}
-maps.x["G"] = {
-  function()
-    vim.g.minianimate_disable = true
-    vim.cmd("normal! G$")
-    vim.g.minianimate_disable = false
-  end,
-  desc = "G and go to the last position (visual)",
-}
-maps.n["<C-a>"] = { -- to move to the previous position press ctrl + oo
-  function()
-    vim.g.minianimate_disable = true
-    vim.cmd("normal! gg0vG$")
-    vim.g.minianimate_disable = false
-  end,
-  desc = "Visually select all",
-}
 
 -- packages -----------------------------------------------------------------
 -- lazy
@@ -948,6 +896,30 @@ if is_available("telescope.nvim") then
     end,
     desc = "Search symbol in buffer", -- Useful to find every time a variable is assigned.
   }
+  maps.n["<leader>lR"] = {
+    function() require("telescope.builtin").lsp_references() end,
+    desc = "LSP references",
+  }
+  maps.n["<leader>lD"] = {
+    function() require("telescope.builtin").lsp_definitions() end,
+    desc = "LSP definitions",
+  }
+  maps.n["<leader>lI"] = {
+    function() require("telescope.builtin").lsp_implementations() end,
+    desc = "LSP implementations",
+  }
+  maps.n["<leader>lT"] = {
+    function() require("telescope.builtin").lsp_type_definitions() end,
+    desc = "LSP type definitions",
+  }
+  maps.n["<leader>lS"] = {
+    function() require("telescope.builtin").lsp_workspace_symbols() end,
+    desc = "LSP workspace symbols",
+  }
+  maps.n["<leader>ld"] = {
+    function() require("telescope.builtin").diagnostics() end,
+    desc = "LSP diagnostics",
+  }
   maps.n["gs"] = {
     function()
       local aerial_avail, _ = pcall(require, "aerial")
@@ -1309,19 +1281,34 @@ if is_available("hop.nvim") then
   -- Note that Even though we are using ENTER for hop, you can still select items
   -- from special menus like 'quickfix', 'q?' and 'q:' with <C+ENTER>.
 
-  maps.n["<C-m>"] = { -- The terminal undersand C-m and ENTER as the same key.
+  -- Create a function to check if we're in a quickfix window
+  local function is_quickfix()
+    return vim.bo.filetype == "qf"
+  end
+
+  maps.n["<C-m>"] = {
     function()
-      require("hop")
-      vim.cmd("silent! HopWord")
+      if is_quickfix() then
+        -- Let Enter work normally in quickfix
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
+      else
+        require("hop")
+        vim.cmd("silent! HopWord")
+      end
     end,
-    desc = "Hop to word",
+    desc = "Hop to word (disabled in quickfix)",
   }
-  maps.x["<C-m>"] = { -- The terminal undersand C-m and ENTER as the same key.
+  maps.x["<C-m>"] = {
     function()
-      require("hop")
-      vim.cmd("silent! HopWord")
+      if is_quickfix() then
+        -- Let Enter work normally in quickfix
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
+      else
+        require("hop")
+        vim.cmd("silent! HopWord")
+      end
     end,
-    desc = "Hop to word",
+    desc = "Hop to word (disabled in quickfix)",
   }
 end
 
@@ -1594,21 +1581,18 @@ if is_autoformat_enabled and is_filetype_allowed and is_filetype_ignored then
   lsp_mappings.n["<leader>lS"] = { function() vim.lsp.buf.workspace_symbol() end, desc = "Search symbol in workspace" }
   lsp_mappings.n["gS"] = { function() vim.lsp.buf.workspace_symbol() end, desc = "Search symbol in workspace" }
 
-  -- LSP telescope
+  -- LSP telescope - ensure telescope mappings are properly set
   if is_available("telescope.nvim") then -- setup telescope mappings if available
-    if lsp_mappings.n.gd then lsp_mappings.n.gd[1] = function() require("telescope.builtin").lsp_definitions() end end
-    if lsp_mappings.n.gI then
-      lsp_mappings.n.gI[1] = function() require("telescope.builtin").lsp_implementations() end
-    end
-    if lsp_mappings.n.gr then lsp_mappings.n.gr[1] = function() require("telescope.builtin").lsp_references() end end
-    if lsp_mappings.n["<leader>lR"] then
-      lsp_mappings.n["<leader>lR"][1] = function() require("telescope.builtin").lsp_references() end
-    end
-    if lsp_mappings.n.gy then
-      lsp_mappings.n.gy[1] = function() require("telescope.builtin").lsp_type_definitions() end
-    end
-    if lsp_mappings.n["<leader>lS"] then
-      lsp_mappings.n["<leader>lS"][1] = function()
+    lsp_mappings.n.gd = { function() require("telescope.builtin").lsp_definitions() end, desc = "Goto definition (telescope)" }
+    lsp_mappings.n.gI = { function() require("telescope.builtin").lsp_implementations() end, desc = "Goto implementation (telescope)" }
+    lsp_mappings.n.gr = { function() require("telescope.builtin").lsp_references() end, desc = "Goto references (telescope)" }
+    lsp_mappings.n.gT = { function() require("telescope.builtin").lsp_type_definitions() end, desc = "Goto type definition (telescope)" }
+    lsp_mappings.n["<leader>lR"] = { function() require("telescope.builtin").lsp_references() end, desc = "LSP references (telescope)" }
+    lsp_mappings.n["<leader>lD"] = { function() require("telescope.builtin").lsp_definitions() end, desc = "LSP definitions (telescope)" }
+    lsp_mappings.n["<leader>lI"] = { function() require("telescope.builtin").lsp_implementations() end, desc = "LSP implementations (telescope)" }
+    lsp_mappings.n["<leader>lT"] = { function() require("telescope.builtin").lsp_type_definitions() end, desc = "LSP type definitions (telescope)" }
+    lsp_mappings.n["<leader>lS"] = {
+      function()
         vim.ui.input({ prompt = "Symbol Query: (leave empty for word under cursor)" }, function(query)
           if query then
             -- word under cursor if given query is empty
@@ -1619,10 +1603,11 @@ if is_autoformat_enabled and is_filetype_allowed and is_filetype_ignored then
             }
           end
         end)
-      end
-    end
-    if lsp_mappings.n["gS"] then
-      lsp_mappings.n["gS"][1] = function()
+      end,
+      desc = "LSP workspace symbols (telescope)"
+    }
+    lsp_mappings.n["gS"] = {
+      function()
         vim.ui.input({ prompt = "Symbol Query: (leave empty for word under cursor)" }, function(query)
           if query then
             -- word under cursor if given query is empty
@@ -1633,8 +1618,9 @@ if is_autoformat_enabled and is_filetype_allowed and is_filetype_ignored then
             }
           end
         end)
-      end
-    end
+      end,
+      desc = "LSP workspace symbols (telescope)"
+    }
   end
 
   return lsp_mappings
