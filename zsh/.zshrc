@@ -132,3 +132,6 @@ source <(fzf --zsh)
 if [ -f ~/.gitrc ]; then
     . ~/.gitrc
 fi
+
+# opencode
+export PATH=/home/yury/.opencode/bin:$PATH
