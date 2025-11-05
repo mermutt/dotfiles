@@ -4,6 +4,6 @@ source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring
 source /usr/share/zsh/plugins/zsh-auto-notify/auto-notify.plugin.zsh
 source /usr/share/zsh/plugins/fzf-tab/fzf-tab.plugin.zsh
 
-export OLLAMA_API_BASE=http://doe:11434
+export CMAKE_BUILD_PARALLEL_LEVEL=""
 
 export PVOL=/data

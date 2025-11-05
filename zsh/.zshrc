@@ -12,8 +12,10 @@ export HISTORY_IGNORE="(ls|cd|pwd|exit|sudo reboot|history|cd -|cd ..)"
 
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git --exclude external'
 
-export LANG=ru_RU.UTF-8
-export LC_ALL=ru_RU.UTF-8
+#export LANG=ru_RU.UTF-8
+#export LC_ALL=ru_RU.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 #  ┬  ┌─┐┌─┐┌┬┐  ┌─┐┌┐┌┌─┐┬┌┐┌┌─┐
 #  │  │ │├─┤ ││  ├┤ ││││ ┬││││├┤
