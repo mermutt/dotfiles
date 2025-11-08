@@ -121,7 +121,10 @@ alias la='ls -alh --color=always'
 
 alias rgi='rg -i'
 
-#alias ls='lsd -a --group-directories-first'
+tn() {
+    TMUX_NESTED=1 tmux -L nested new-session -A -s infra "$@"
+}
+
 
 #  ┌─┐┬ ┬┌┬┐┌─┐  ┌─┐┌┬┐┌─┐┬─┐┌┬┐
 #  ├─┤│ │ │ │ │  └─┐ │ ├─┤├┬┘ │
